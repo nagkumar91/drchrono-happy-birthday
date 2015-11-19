@@ -64,7 +64,7 @@ target/
 
 
 #my settings
-drchrono_happy_birthday/settings/nagkumar.py
+drchrono_happy_birthday/drchrono_happy_birthday/settings/nagkumar.py
 
 #server settings
-drchrono_happy_birthday/settings/production.py
+drchrono_happy_birthday/drchrono_happy_birthday/settings/production.py
