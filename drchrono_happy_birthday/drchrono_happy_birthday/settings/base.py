@@ -130,7 +130,7 @@ from datetime import timedelta
 CELERYBEAT_SCHEDULE = {
     'add-every-30-seconds': {
         'task': 'happybirthday.tasks.debug_task',
-        'schedule': timedelta(seconds=30),
+        'schedule': timedelta(days=1),
         'args': (16, 16)
     },
 }
