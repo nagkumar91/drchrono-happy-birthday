@@ -68,3 +68,6 @@ drchrono_happy_birthday/drchrono_happy_birthday/settings/nagkumar.py
 
 #server settings
 drchrono_happy_birthday/drchrono_happy_birthday/settings/production.py
+
+#celery beat db
+drchrono_happy_birthday/celerybeat-schedule.db

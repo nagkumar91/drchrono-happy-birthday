@@ -1,14 +1,23 @@
-# from background_task import background
-# from logging import getLogger
-# from .models import Doctor, Patient
-# logger = getLogger(__name__)
-# import datetime
-# from .helpers import wish_happy_birthday
-#
-# @background(schedule=1)
-# def happy_birthday_task():
-#     print "in task"
-#     patients = Patient.objects.all()
-#     for p in patients:
-#         if p.date_of_birth == datetime.date.today():
-#             wish_happy_birthday(p)
+from __future__ import absolute_import
+
+import os
+
+from celery import Celery
+
+# set the default Django settings module for the 'celery' program.
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'drchrono_happy_birthday.settings.')
+
+from django.conf import settings  # noqa
+
+app = Celery('happybirthday')
+
+# Using a string here means the worker will not have to
+# pickle the object when using Windows.
+app.config_from_object('django.conf:settings')
+app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+
+
+@app.task(bind=True)
+def debug_task(self, *args, **kwargs):
+    print "Processing the request"
+    print('Request: {0!r}'.format(self.request))

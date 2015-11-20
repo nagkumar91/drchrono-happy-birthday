@@ -124,7 +124,18 @@ DEFAULT_PASSWORD = 'doctor123'
 import djcelery
 
 djcelery.setup_loader()
-BROKER_URL = "amqp://admin:admin@localhost:5672/drchrono"
+
+from datetime import timedelta
+
+CELERYBEAT_SCHEDULE = {
+    'add-every-30-seconds': {
+        'task': 'happybirthday.tasks.debug_task',
+        'schedule': timedelta(seconds=30),
+        'args': (16, 16)
+    },
+}
+BROKER_URL = "amqp://admin:admin@localhost:5672/default"
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
 CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERY_TIMEZONE = 'America/Los_Angeles'
 
