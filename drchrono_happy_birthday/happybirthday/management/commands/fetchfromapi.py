@@ -3,13 +3,12 @@ from django.core.management import BaseCommand
 from optparse import make_option
 import os
 import sys
+
+from django.db import IntegrityError
 from happybirthday.models import Doctor, Patient
 import shutil
 import requests
 from datetime import datetime
-
-def update_from_api():
-    pass
 
 
 def fetch_doctors(token):
@@ -37,26 +36,46 @@ def fetch_patients(token):
 
 
 def save_doctors(list_of_doctors):
-    pass
+    for d in list_of_doctors:
+        doctor_with_same_email = Doctor.objects.filter(email=d['email'])
+        if len(doctor_with_same_email) == 0:
+            try:
+                doctor_obj = Doctor.objects.create_user(
+                    d['email'],
+                    d['email'],
+                    settings.DEFAULT_PASSWORD,
+                )
+                doctor_obj.first_name = d['first_name']
+                doctor_obj.last_name = d['last_name']
+                doctor_obj.save()
+            except IntegrityError:
+                pass
 
 
 def save_patients(list_of_patients, doctor):
     for p in list_of_patients:
-        print p
-        dob = p['date_of_birth']
-        d = datetime.strptime("1986-03-17", "%Y-%m-%d")
-        
-        patient_in_db = Patient(
-            first_name=p['first_name'],
-            last_name = p['last_name'],
-            email_id = p['email'],
-            date_of_birth = d.date(),
-            doctor=doctor
-        )
-        patient_in_db.save()
+        try:
+            dob = p['date_of_birth']
+            patient_in_db = Patient(
+                first_name=p['first_name'],
+                last_name=p['last_name'],
+                email_id=p['email'],
+                pk=p['id'],
+                doctor=doctor
+            )
+            patient_in_db.save()
+            if dob:
+                d = datetime.strptime(dob, "%Y-%m-%d")
+                patient_in_db.date_of_birth = d.date()
+                patient_in_db.save()
+        except IntegrityError:
+            pass
 
 
 def reset_from_api():
+    pass
+
+def update_from_api():
     doctors = Doctor.objects.all()
     for doctor in doctors:
         token_obj = doctor.access_tokens.all()
@@ -70,9 +89,11 @@ def reset_from_api():
                     user_token = t.token
             if user_token:
                 list_of_doctors = fetch_doctors(user_token)
+                save_doctors(list_of_doctors)
             if patients_token:
                 list_of_patients = fetch_patients(patients_token)
                 save_patients(list_of_patients, doctor)
+
 
 class Command(BaseCommand):
     args = '<update reset>'

@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'happybirthday',
-    'background_task',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -117,3 +116,5 @@ PATIENTS_API_URL = "https://drchrono.com/api/patients"
 MAILGUN_SECRET_KEY = ''
 MAILGUN_PUBLIC_KEY = ''
 MAILGUN_API_URL = ''
+
+DEFAULT_PASSWORD = 'doctor123'
