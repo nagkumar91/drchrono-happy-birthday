@@ -37,6 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'happybirthday',
+    'background_task',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -100,3 +102,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+AUTH_USER_MODEL = 'happybirthday.Doctor'
+
+OPTION_TO_UPDATE = 'update'
+OPTION_TO_RESET = 'reset'
+
+PATIENTS_SCOPE = 'patients'
+USER_SCOPE = 'user'
+DOCTOR_API_URL = "https://drchrono.com/api/doctors"
+PATIENTS_API_URL = "https://drchrono.com/api/patients"
+
+MAILGUN_SECRET_KEY = ''
+MAILGUN_PUBLIC_KEY = ''
+MAILGUN_API_URL = ''
