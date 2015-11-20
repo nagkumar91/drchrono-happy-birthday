@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djcelery',
     'happybirthday',
 )
 
@@ -118,3 +119,12 @@ MAILGUN_PUBLIC_KEY = ''
 MAILGUN_API_URL = ''
 
 DEFAULT_PASSWORD = 'doctor123'
+
+#task queue
+import djcelery
+
+djcelery.setup_loader()
+BROKER_URL = "amqp://admin:admin@localhost:5672/drchrono"
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
