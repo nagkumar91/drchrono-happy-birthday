@@ -1,8 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h3>Success! We have all the details of {{ number_of_patients }} patients that we need. </h3>
-    <h3>We will send an email on your patient's birthday.</h3>
-    <h3>Our system will automatically pull new data and send emails to your new patients as well.</h3>
+    <div class="row">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-6" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Happy Birthday App</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/home/">Home</a></li>
+                    <li><a href="#">List Patients</a></li>
+                    <li><a href="#">Add Patient</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
+    </div>
+    {% if number_of_patients %}
+        <h3>Success! We have all the details of {{ number_of_patients }} patients that we need. </h3>
+        <h3>We will send an email on your patient's birthday.</h3>
+        <h3>Our system will automatically pull new data and send emails to your new patients as well.</h3>
+    {% endif %}
     <p>To opt out of the service, please click on the link that you have received on {{ doctor.email }}!</p>
 {% endblock %}

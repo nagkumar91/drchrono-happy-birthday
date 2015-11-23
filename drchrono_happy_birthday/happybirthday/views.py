@@ -36,11 +36,10 @@ def oauth_handler_patient(request):
     print request
     code = request.GET.get("code", None)
     context_instance = RequestContext(request, {})
-    if code:
+    if code or request.user:
         number_of_patients = get_patients_info(code, request.user)
-        if number_of_patients:
-            send_opt_out_email.delay(request.user)
-            context_instance = RequestContext(request,{
+        if number_of_patients or request.user:
+            context_instance = RequestContext(request, {
                 'number_of_patients': number_of_patients,
                 'doctor': request.user
             })
@@ -48,6 +47,16 @@ def oauth_handler_patient(request):
         return render_to_response("error.html", context_instance)
     else:
         return render_to_response("error.html", context_instance)
+
+
+@login_required
+def homepage(request):
+    print request.user
+    context_instance = RequestContext(request, {
+        'number_of_patients': None,
+        'doctor': request.user
+    })
+    return render_to_response("done.html", context_instance)
 
 
 def opt_out(request, id):
@@ -58,9 +67,16 @@ def opt_out(request, id):
 
 
 def home(request):
-    context_instance = RequestContext(request, {
-        "client_id": settings.DRCHRONO_CLIENT_ID,
-        "scope": settings.USER_SCOPE,
-        "redirect_url": "%s%s" % (settings.SITE_URL, settings.OAUTH_HANDLER_USER)
-    })
-    return render_to_response("home.html", context_instance)
+    if request.user.is_anonymous():
+        context_instance = RequestContext(request, {
+            "client_id": settings.DRCHRONO_CLIENT_ID,
+            "scope": settings.USER_SCOPE,
+            "redirect_url": "%s%s" % (settings.SITE_URL, settings.OAUTH_HANDLER_USER)
+        })
+        return render_to_response("home.html", context_instance)
+    else:
+        context_instance = RequestContext(request, {
+            'number_of_patients': None,
+            'doctor': request.user
+        })
+        return render_to_response("done.html", context_instance)

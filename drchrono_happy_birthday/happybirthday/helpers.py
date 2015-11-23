@@ -1,7 +1,7 @@
 import requests
 from django.conf import settings
 from .models import Doctor, Patient, AccessToken
-
+# from .tasks import send_opt_out_email
 
 def wish_happy_birthday(patient):
     doctor_name = "%s %s" % (patient.doctor.first_name, patient.doctor.last_name)
@@ -50,6 +50,7 @@ def get_doctor_info(code):
                 })
                 d.save()
                 d.send_email = True
+                # send_opt_out_email.delay(doctor)
                 d.set_password(settings.DEFAULT_USER_PASSWORD)
                 d.save()
                 token, created = AccessToken.objects.update_or_create(doctor=d, defaults={
