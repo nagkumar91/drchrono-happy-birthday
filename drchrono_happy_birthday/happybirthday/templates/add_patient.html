@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block content %}
     <div class="row">
         <div class="container-fluid">
@@ -16,17 +15,19 @@
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="{% url 'homepage' %}">Home</a></li>
                     <li><a href="{% url 'patients_list' %}">List Patients</a></li>
-                    <li><a href="{% url 'create_patient' %}">Add Patient</a></li>
+                    <li class="active"><a href="#">Add Patient</a></li>
                 </ul>
-            </div><!-- /.navbar-collapse -->
+            </div>
         </div>
     </div>
-    {% if number_of_patients %}
-        <h3>Success! We have all the details of {{ number_of_patients }} patients that we need. </h3>
-        <h3>We will send an email on your patient's birthday.</h3>
-        <h3>Our system will automatically pull new data and send emails to your new patients as well.</h3>
-    {% endif %}
-    <p>To opt out of the service, please click on the link that you have received on {{ doctor.email }}!</p>
+    <div class="row">
+        <form action="{% url 'add_patient' %}" method="POST">
+            {% csrf_token %}
+            {{ form.as_table }}
+            <input type="submit" value="Submit">
+        </form>
+
+    </div>
 {% endblock %}

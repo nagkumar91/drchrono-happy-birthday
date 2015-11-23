@@ -1,11 +1,13 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 # Create your views here.
 from django.template import RequestContext
 from django.views.generic import ListView
 
+from .forms import PatientForm
 from .models import Doctor, Patient
 from .helpers import get_doctor_info, get_patients_info
 from .tasks import send_opt_out_email
@@ -61,6 +63,30 @@ def homepage(request):
     return render_to_response("done.html", context_instance)
 
 
+@login_required
+def add_patient(request):
+    if request.method == 'GET':
+        form = PatientForm()
+        context_instance = RequestContext(request, {'form': form})
+        return render_to_response("add_patient.html", context_instance)
+    else:
+        form = PatientForm(request.POST)
+        print form
+        if form.is_valid():
+            print "Is valid"
+            print form.cleaned_data
+            p = Patient(
+                doctor=request.user,
+                first_name=form.cleaned_data['first_name'],
+                last_name=form.cleaned_data['last_name'],
+                email_id=form.cleaned_data['email_id'],
+                date_of_birth=form.cleaned_data['date_of_birth']
+            )
+            print p
+            p.save()
+            return HttpResponseRedirect('/patient_list/')
+
+
 def opt_out(request, id):
     d = Doctor.objects.get(pk=int(id))
     d.send_email = False
@@ -87,5 +113,6 @@ def home(request):
 class PatientList(ListView):
     model = Patient
     template_name = 'patient_list.html'
+
     def get_queryset(self):
         return self.request.user.patients.all()
