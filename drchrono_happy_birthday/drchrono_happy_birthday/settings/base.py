@@ -135,6 +135,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'happybirthday.tasks.debug_task',
         'schedule': crontab(hour=7, minute=30)
     },
+    'update-patients':  {
+        'task': 'happybirthday.tasks.update_records',
+        'schedule': timedelta(hours=5)
+    }
 }
 BROKER_URL = "amqp://admin:admin@localhost:5672/default"
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'

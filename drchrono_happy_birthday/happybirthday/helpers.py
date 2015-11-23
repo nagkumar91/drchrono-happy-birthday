@@ -78,7 +78,7 @@ def get_patients_info(code, doctor):
         response = r.json()
         access_token = response['access_token']
         token, created = AccessToken.objects.update_or_create(doctor=doctor, defaults={
-            'patient': code
+            'patient_token': code
         })
         token.save()
     else:
@@ -97,7 +97,7 @@ def get_patients_info(code, doctor):
             for patient in patients:
                 if patient['date_of_birth'] and patient['email']:
                     p = Patient(first_name=patient['first_name'], last_name=patient['last_name'],
-                                date_of_birth=patient['date_of_birth'], doctor=doctor)
+                                date_of_birth=patient['date_of_birth'], doctor=doctor, pk=patient['id'])
                     p.save()
                     p_list.append(p)
         except IndexError:

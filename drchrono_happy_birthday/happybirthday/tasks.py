@@ -7,7 +7,7 @@ from celery import Celery, shared_task
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'drchrono_happy_birthday.settings.')
 
 from django.conf import settings  # noqa
-from .models import Doctor
+from .models import Doctor, Patient
 from .helpers import wish_happy_birthday
 import datetime
 
@@ -36,8 +36,8 @@ def debug_task(self, *args, **kwargs):
 
 @shared_task
 def send_opt_out_email(doctor, *args, **kwargs):
-    content = "You have chosen opt out. Please click on the link below to confirm. %s/opt_out/%s" % (
-    settings.SITE_URL, doctor.pk)
+    content = "You have chosen opt out. Please click on the link below to confirm. %s/opt_out/%s/" % (
+        settings.SITE_URL, doctor.pk)
     requests.post(
         settings.MAILGUN_API_URL,
         auth=("api", settings.MAILGUN_SECRET_KEY),
@@ -45,3 +45,43 @@ def send_opt_out_email(doctor, *args, **kwargs):
               "to": [doctor.email],
               "subject": "Opt out!",
               "text": content})
+
+
+@shared_task
+def refresh_token(token):
+    return None
+
+
+@shared_task
+def get_new_patients(doctor, token):
+    auth_token_str = "Bearer %s" % token
+    headers = {
+        "Authorization": auth_token_str,
+        "Content-Type": "application/json"
+    }
+    r = requests.get(settings.PATIENTS_API_URL, headers=headers)
+    if r.status_code == requests.codes.ok:
+        patients = r.json()['results']
+        for p in patients:
+            if p['date_of_birth'] and p['email']:
+                p, created = Patient.objects.update_or_create(pk=p['id'], defaults={
+                    "first_name": p['first_name'],
+                    "last_name": p['last_name'],
+                    "date_of_birth": p['date_of_birth'],
+                    "doctor": doctor
+                })
+                p.save()
+
+
+@app.task(bind=True)
+def update_records(self, *args, **kwargs):
+    doctors = Doctor.objects.all()
+    for doctor in doctors:
+        tokens = doctor.access_tokens.all()
+        for token in tokens:
+            new_token = refresh_token(token)
+            if new_token:
+                token.patient_token = new_token['patient_token']
+                token.user_token = new_token['user_token']
+                token.save()
+        get_new_patients(doctor, tokens[0].patient_token)
