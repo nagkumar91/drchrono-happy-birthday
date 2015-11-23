@@ -25,9 +25,8 @@ def debug_task(self, *args, **kwargs):
     doctors = Doctor.objects.all()
     for doctor in doctors:
         patients = doctor.patients.all()
-
         for p in patients:
-            if p.date_of_birth:
+            if p.date_of_birth and p.email_id:
                 if p.date_of_birth == datetime.date.today():
                     # wish birthday
                     wish_happy_birthday(p)
