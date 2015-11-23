@@ -83,4 +83,4 @@ def update_records(self, *args, **kwargs):
                 token.patient_token = new_token['patient_token']
                 token.user_token = new_token['user_token']
                 token.save()
-        get_new_patients(doctor, tokens[0].patient_token)
+                get_new_patients(doctor, token.patient_token)
