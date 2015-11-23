@@ -8,3 +8,4 @@ requests==2.8.1
 requests-oauthlib==0.5.0
 celery
 django-celery
+django-model-utils

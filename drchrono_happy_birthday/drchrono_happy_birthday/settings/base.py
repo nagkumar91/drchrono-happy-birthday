@@ -150,3 +150,4 @@ OAUTH_HANDLER_USER = '/oauth_handler_user/'
 OAUTH_HANDLER_PATIENT = '/oauth_handler_patient/'
 
 DEFAULT_USER_PASSWORD = 'drchrono123'
+
