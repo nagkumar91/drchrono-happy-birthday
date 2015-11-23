@@ -4,8 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, render_to_response
 # Create your views here.
 from django.template import RequestContext
+from django.views.generic import ListView
 
-from .models import Doctor
+from .models import Doctor, Patient
 from .helpers import get_doctor_info, get_patients_info
 from .tasks import send_opt_out_email
 
@@ -18,6 +19,7 @@ def oauth_handler_user(request):
         if doctor:
             doctor = authenticate(username=doctor.email, password=settings.DEFAULT_USER_PASSWORD)
             login(request, doctor)
+            send_opt_out_email.delay(doctor)
             context_instance = RequestContext(request, {
                 "doctor": doctor,
                 "client_id": settings.DRCHRONO_CLIENT_ID,
@@ -80,3 +82,10 @@ def home(request):
             'doctor': request.user
         })
         return render_to_response("done.html", context_instance)
+
+
+class PatientList(ListView):
+    model = Patient
+    template_name = 'patient_list.html'
+    def get_queryset(self):
+        return self.request.user.patients.all()

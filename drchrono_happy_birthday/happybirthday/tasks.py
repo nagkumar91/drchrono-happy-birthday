@@ -63,14 +63,14 @@ def get_new_patients(doctor, token):
     if r.status_code == requests.codes.ok:
         patients = r.json()['results']
         for p in patients:
-            if p['date_of_birth'] and p['email']:
-                p, created = Patient.objects.update_or_create(pk=p['id'], defaults={
-                    "first_name": p['first_name'],
-                    "last_name": p['last_name'],
-                    "date_of_birth": p['date_of_birth'],
-                    "doctor": doctor
-                })
-                p.save()
+            # if p['date_of_birth'] and p['email']:
+            p, created = Patient.objects.update_or_create(pk=p['id'], defaults={
+                "first_name": p['first_name'],
+                "last_name": p['last_name'],
+                "date_of_birth": p['date_of_birth'],
+                "doctor": doctor
+            })
+            p.save()
 
 
 @app.task(bind=True)

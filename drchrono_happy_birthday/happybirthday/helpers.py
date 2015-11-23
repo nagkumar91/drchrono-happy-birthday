@@ -1,6 +1,8 @@
 import requests
 from django.conf import settings
 from .models import Doctor, Patient, AccessToken
+
+
 # from .tasks import send_opt_out_email
 
 def wish_happy_birthday(patient):
@@ -50,7 +52,6 @@ def get_doctor_info(code):
                 })
                 d.save()
                 d.send_email = True
-                # send_opt_out_email.delay(doctor)
                 d.set_password(settings.DEFAULT_USER_PASSWORD)
                 d.save()
                 token, created = AccessToken.objects.update_or_create(doctor=d, defaults={
@@ -96,11 +97,12 @@ def get_patients_info(code, doctor):
         try:
             patients = r.json()['results']
             for patient in patients:
-                if patient['date_of_birth'] and patient['email']:
-                    p = Patient(first_name=patient['first_name'], last_name=patient['last_name'],
-                                date_of_birth=patient['date_of_birth'], doctor=doctor, pk=patient['id'])
-                    p.save()
-                    p_list.append(p)
+                # if patient['date_of_birth'] and patient['email']:
+                p = Patient(first_name=patient['first_name'], last_name=patient['last_name'],
+                            date_of_birth=patient['date_of_birth'], doctor=doctor, pk=patient['id'],
+                            email_id=patient['email'])
+                p.save()
+                p_list.append(p)
         except IndexError:
             print "indexeror"
     else:

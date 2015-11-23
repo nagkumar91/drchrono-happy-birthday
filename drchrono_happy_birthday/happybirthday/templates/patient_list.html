@@ -16,17 +16,36 @@
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="{% url 'patients_list' %}">List Patients</a></li>
+                    <li><a href="{% url 'homepage' %}">Home</a></li>
+                    <li class="active"><a href="#">List Patients</a></li>
                     <li><a href="#">Add Patient</a></li>
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div>
     </div>
-    {% if number_of_patients %}
-        <h3>Success! We have all the details of {{ number_of_patients }} patients that we need. </h3>
-        <h3>We will send an email on your patient's birthday.</h3>
-        <h3>Our system will automatically pull new data and send emails to your new patients as well.</h3>
+    {% if object_list %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email</th>
+                  <th>Date of Birth</th>
+                </tr>
+              </thead>
+            <tbody>
+            {% for patient in object_list %}
+                <tr>
+                    <td>{{ patient.first_name }}</td>
+                    <td>{{ patient.last_name }}</td>
+                    <td>{{ patient.email_id }}</td>
+                    <td>{{ patient.date_of_birth }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    <p>No records</p>
     {% endif %}
-    <p>To opt out of the service, please click on the link that you have received on {{ doctor.email }}!</p>
+
 {% endblock %}
