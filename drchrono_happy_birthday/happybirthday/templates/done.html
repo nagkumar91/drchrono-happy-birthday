@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>Success! We have all the details of {{ number_of_patients }} patients that we need. </h3>
+    <h3>We will send an email on your patient's birthday.</h3>
+    <h3>Our system will automatically pull new data and send emails to your new patients as well.</h3>
+    <p>To opt out of the service, please click on the link that you have received on {{ doctor.email }}!</p>
+{% endblock %}

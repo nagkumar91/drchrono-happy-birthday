@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Welcome to Happy birthday app</h2>
+    <h4>You can use this app to send automated happy birthday to your patients!</h4>
+<a href="https://drchrono.com/o/authorize?client_id={{ client_id }}&redirect_uri={{ redirect_url }}&scope={{ scope }}&response_type=code">
+    Click here to get started</a>
+{% endblock %}

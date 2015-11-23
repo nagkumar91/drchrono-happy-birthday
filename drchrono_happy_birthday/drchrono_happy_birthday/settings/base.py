@@ -111,8 +111,11 @@ OPTION_TO_RESET = 'reset'
 
 PATIENTS_SCOPE = 'patients'
 USER_SCOPE = 'user'
+CODE_TO_TOKEN_URL = "https://drchrono.com/o/token/"
 DOCTOR_API_URL = "https://drchrono.com/api/doctors"
 PATIENTS_API_URL = "https://drchrono.com/api/patients"
+DRCHRONO_CLIENT_ID = ''
+DRCHRONO_CLIENT_SECRET = ''
 
 MAILGUN_SECRET_KEY = ''
 MAILGUN_PUBLIC_KEY = ''
@@ -122,16 +125,15 @@ DEFAULT_PASSWORD = 'doctor123'
 
 #task queue
 import djcelery
-
+from celery.schedules import crontab
 djcelery.setup_loader()
 
 from datetime import timedelta
 
 CELERYBEAT_SCHEDULE = {
-    'add-every-30-seconds': {
+    'add-every-morning': {
         'task': 'happybirthday.tasks.debug_task',
-        'schedule': timedelta(days=1),
-        'args': (16, 16)
+        'schedule': crontab(hour=7, minute=30)
     },
 }
 BROKER_URL = "amqp://admin:admin@localhost:5672/default"
@@ -139,3 +141,8 @@ CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
 CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 CELERY_TIMEZONE = 'America/Los_Angeles'
 
+SITE_URL = ''
+OAUTH_HANDLER_USER = '/oauth_handler_user/'
+OAUTH_HANDLER_PATIENT = '/oauth_handler_patient/'
+
+DEFAULT_USER_PASSWORD = 'drchrono123'

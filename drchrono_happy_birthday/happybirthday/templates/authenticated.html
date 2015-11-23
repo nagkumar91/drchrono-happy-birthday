@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+    <h3>hi, {{ doctor.first_name }}</h3>
+    <h4>You have been authenticated.</h4>
+    <a href="https://drchrono.com/o/authorize?client_id={{ client_id }}&redirect_uri={{ redirect_url }}&scope={{ scope }}&response_type=code">Click here to allow the app the access to all your patients</a>
+{% endblock %}

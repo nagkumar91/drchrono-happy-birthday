@@ -7,7 +7,7 @@ from model_utils.models import TimeStampedModel
 
 class Doctor(AbstractUser):
     REQUIRED_FIELDS = ['email']
-
+    send_email = models.BooleanField(default=True)
     class Meta:
         verbose_name = 'Doctor'
         verbose_name_plural = 'Doctors'
@@ -26,9 +26,6 @@ class Patient(TimeStampedModel):
 
 
 class AccessToken(models.Model):
-    client_id = models.CharField(max_length=255)
-    client_secret = models.CharField(max_length=255)
-    scope = models.CharField(max_length=255)
-    token = models.CharField(max_length=255)
+    patient_token = models.CharField(max_length=255)
+    user_token = models.CharField(max_length=255)
     doctor = models.ForeignKey(Doctor, related_name='access_tokens', null=True, blank=True)
-    refresh_token = models.CharField(max_length=255)
